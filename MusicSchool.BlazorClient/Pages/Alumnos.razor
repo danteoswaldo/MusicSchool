@@ -1,0 +1,57 @@
+@page "/alumnos"
+@inject AlumnoApiService AlumnoService
+
+<h3>Gestión de Alumnos</h3>
+
+<input placeholder="Nombre" @bind="nuevo.Nombre" />
+<input placeholder="Apellido" @bind="nuevo.Apellido" />
+<input type="date" @bind="nuevo.FechaNacimiento" />
+<input placeholder="Identificación" @bind="nuevo.Identificacion" />
+<button @onclick="Guardar">Guardar</button>
+
+<ul>
+@foreach (var a in alumnos)
+{
+    <li>@a.Nombre @a.Apellido (@a.Identificacion)
+        <button @onclick="() => Editar(a)">Editar</button>
+        <button @onclick="() => Eliminar(a.Id)">Eliminar</button>
+    </li>
+}
+</ul>
+
+@code {
+    List<Alumno> alumnos = new();
+    Alumno nuevo = new();
+
+    protected override async Task OnInitializedAsync()
+        => alumnos = await AlumnoService.ObtenerTodos();
+
+    async Task Guardar()
+    {
+        if (nuevo.Id == 0)
+            await AlumnoService.Crear(nuevo);
+        else
+            await AlumnoService.Actualizar(nuevo);
+
+        nuevo = new();
+        alumnos = await AlumnoService.ObtenerTodos();
+    }
+
+    async Task Eliminar(int id)
+    {
+        await AlumnoService.Eliminar(id);
+        alumnos = await AlumnoService.ObtenerTodos();
+    }
+
+    void Editar(Alumno a)
+    {
+        nuevo = new Alumno
+        {
+            Id = a.Id,
+            Nombre = a.Nombre,
+            Apellido = a.Apellido,
+            FechaNacimiento = a.FechaNacimiento,
+            Identificacion = a.Identificacion
+        };
+    }
+}
