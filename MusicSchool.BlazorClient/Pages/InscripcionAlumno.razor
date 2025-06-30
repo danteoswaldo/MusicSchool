@@ -1,0 +1,18 @@
+@page "/inscribir-alumno"
+@inject InscripcionApiService Api
+
+<h3>Inscripción de Alumno a Escuela</h3>
+
+<input type="number" @bind="alumnoId" placeholder="AlumnoId" />
+<input type="number" @bind="escuelaId" placeholder="EscuelaId" />
+<button @onclick="Inscribir">Inscribir</button>
+
+@code {
+    int alumnoId;
+    int escuelaId;
+
+    async Task Inscribir()
+    {
+        await Api.InscribirAlumno(alumnoId, escuelaId);
+    }
+}

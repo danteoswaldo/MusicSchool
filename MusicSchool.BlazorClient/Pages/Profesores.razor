@@ -1,0 +1,55 @@
+@page "/profesores"
+@inject ProfesorApiService ProfesorService
+
+<h3>Gestión de Profesores</h3>
+
+<input placeholder="Nombre" @bind="nuevo.Nombre" />
+<input placeholder="Apellido" @bind="nuevo.Apellido" />
+<input placeholder="Identificación" @bind="nuevo.Identificacion" />
+<button @onclick="Guardar">Guardar</button>
+
+<ul>
+@foreach (var p in profesores)
+{
+    <li>@p.Nombre @p.Apellido (@p.Identificacion)
+        <button @onclick="() => Editar(p)">Editar</button>
+        <button @onclick="() => Eliminar(p.Id)">Eliminar</button>
+    </li>
+}
+</ul>
+
+@code {
+    List<Profesor> profesores = new();
+    Profesor nuevo = new();
+
+    protected override async Task OnInitializedAsync()
+        => profesores = await ProfesorService.ObtenerTodos();
+
+    async Task Guardar()
+    {
+        if (nuevo.Id == 0)
+            await ProfesorService.Crear(nuevo);
+        else
+            await ProfesorService.Actualizar(nuevo);
+
+        nuevo = new();
+        profesores = await ProfesorService.ObtenerTodos();
+    }
+
+    async Task Eliminar(int id)
+    {
+        await ProfesorService.Eliminar(id);
+        profesores = await ProfesorService.ObtenerTodos();
+    }
+
+    void Editar(Profesor p)
+    {
+        nuevo = new Profesor
+        {
+            Id = p.Id,
+            Nombre = p.Nombre,
+            Apellido = p.Apellido,
+            Identificacion = p.Identificacion
+        };
+    }
+}

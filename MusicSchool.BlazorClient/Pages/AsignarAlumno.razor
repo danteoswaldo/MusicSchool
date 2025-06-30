@@ -1,0 +1,18 @@
+@page "/asignar-alumno"
+@inject AsignacionApiService AsignacionService
+
+<h3>Asignar Alumno a Profesor</h3>
+
+<input type="number" @bind="alumnoId" placeholder="AlumnoId" />
+<input type="number" @bind="profesorId" placeholder="ProfesorId" />
+<button @onclick="Asignar">Asignar</button>
+
+@code {
+    int alumnoId;
+    int profesorId;
+
+    async Task Asignar()
+    {
+        await AsignacionService.AsignarAlumnoAProfesor(alumnoId, profesorId);
+    }
+}

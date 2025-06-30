@@ -1,0 +1,27 @@
+@page "/consulta-alumnos"
+@using MusicSchool.Application.DTOs
+@inject ConsultasApiService Api
+
+<h3>Consulta de Alumnos por Profesor</h3>
+<input type="number" @bind="profesorId" placeholder="ProfesorId" />
+<button @onclick="Consultar">Consultar</button>
+
+@if (resultados != null)
+{
+    <ul>
+    @foreach (var a in resultados)
+    {
+        <li>@a.Nombre @a.Apellido - Escuela: @a.Escuela</li>
+    }
+    </ul>
+}
+
+@code {
+    int profesorId;
+    List<AlumnoPorProfesorDto> resultados;
+
+    async Task Consultar()
+    {
+        resultados = await Api.ObtenerAlumnosPorProfesor(profesorId);
+    }
+}
